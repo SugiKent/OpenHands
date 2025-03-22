@@ -489,9 +489,10 @@ class AgentController:
         # otherwise the pending action is found in history, but it's incomplete without an obs with tool result
         if self._pending_action and hasattr(self._pending_action, 'tool_call_metadata') and self._pending_action.tool_call_metadata:
             # find out if there already is an observation with the same response_id
+            # using reversed() since the observation we're looking for is likely near the end
             found_observation = False
             response_id = self._pending_action.tool_call_metadata.model_response.id
-            for event in self.state.history:
+            for event in reversed(self.state.history):
                 if (
                     isinstance(event, Observation)
                     and hasattr(event, 'response_id')
